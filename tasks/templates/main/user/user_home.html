@@ -1,0 +1,91 @@
+{% extends 'main/base.html' %} {% block title %} Welcome {% endblock %} {% block content %}
+<div>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-start my-2">
+            <a href="add-task" class="btn btn-info">Add New Task</a>
+        </div>
+        <div class="text-center">
+            <h1 class="display-5 text-dark">Hello, {{user.username}}!</h1>
+
+            <!-- Encouraging Quote -->
+            <blockquote class="blockquote mt-4" id="quoteBlock">
+                <p class="mb-0">Loading quote...</p>
+                <footer class="blockquote-footer mt-2">Author</footer>
+            </blockquote>
+        </div>
+
+        <div class="row justify-content-center ">
+            <div class="col-md-4 text-center">
+                <!-- Add more dynamic content or user-specific information here -->
+                <div class="mt-4">
+                    <div class="card border-dark mb-3">
+                        <div class="card-header bg-info text-light">Total Tasks</div>
+                        <div class="card-body">
+                            {% if tasks %}
+                            <h4 class="card-title">{{total_tasks}}</h4>
+                            <a href="task-list" class="btn btn-info">View Tasks</a> {% else%}
+                            <h5>No tasks at the moment</h5>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <!-- Add more dynamic content or user-specific information here -->
+                <div class="mt-4">
+                    <div class="card border-dark mb-3">
+                        <div class="card-header bg-warning text-dark">Total Pending Tasks</div>
+                        <div class="card-body">
+                            {% if tasks %}
+                            <h4 class="card-title">{{pending_tasks}}</h4>
+                            <a href="task-list" class="btn btn-info">View Tasks</a> {% else%}
+                            <h5>No tasks at the moment</h5>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <!-- Add more dynamic content or user-specific information here -->
+                <div class="mt-4">
+                    <div class="card border-dark mb-3">
+                        <div class="card-header bg-success text-light">Total Completed Tasks</div>
+                        <div class="card-body">
+                            {% if tasks %}
+                            <h4 class="card-title">{{completed_tasks}}</h4>
+                            <a href="task-list" class="btn btn-info">View Tasks</a> {% else%}
+                            <h5>No tasks at the moment</h5>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- Fetch and Display Quote -->
+<script>
+    $(document).ready(function() {
+        // Make an AJAX request to the Quotable API
+        $.ajax({
+            url: 'https://api.quotable.io/random',
+            method: 'GET',
+            success: function(response) {
+                // Update the quote block with the fetched quote
+                $('#quoteBlock p').text('"' + response.content + '"');
+                $('#quoteBlock footer').text(response.author);
+            },
+            error: function() {
+                // Handle errors if the API request fails
+                $('#quoteBlock p').text('Failed to fetch quote.');
+            }
+        });
+    });
+</script>
+
+{% endblock %}

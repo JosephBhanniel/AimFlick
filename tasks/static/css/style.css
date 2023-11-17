@@ -1,0 +1,31 @@
+.hero {
+    background-image: url('../images/bull1.jpg');
+    background-size: cover;
+    height: 100vh;
+    background-repeat: no-repeat;
+    padding-top: 250px;
+}
+
+@media(max-width:1000px) {
+    .hero-right {
+        width: 100%;
+        margin-left: 0px;
+    }
+    .hero-left {
+        display: none;
+    }
+}
+
+.footer {
+    margin-top: 200px;
+}
+
+
+/* 
+ body {
+    background-image: url('../images/cristofer-maximilian-NSKP7Gwa_I0-unsplash.jpg');
+    background-size: cover;
+    height: 100vh;
+    background-repeat: no-repeat;
+    
+}  */
