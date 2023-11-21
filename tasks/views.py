@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
 from .models import Task
+from django.urls import reverse
 from .forms import RegisterForm, TaskForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -39,6 +41,12 @@ def sign_up(request):
     return render(request, 'registration/sign_up.html', {'form': form})
 
 
+
+def task_details(request, id):
+    task = Task.objects.get(pk=id)
+    return HttpResponseRedirect(reverse('task_list'))
+
+
 @login_required
 def add_task(request):
     if request.method == 'POST':
@@ -57,3 +65,37 @@ def add_task(request):
 def task_list(request):
     tasks = Task.objects.filter(user=request.user)
     return render(request, 'main/user/tasks.html', {'tasks': tasks})
+
+
+def edit(request, id):
+    if request.method == "POST":
+        task_instance = Task.objects.get(pk=id)
+        form = TaskForm(request.POST, instance=task_instance)
+        if form.is_valid():
+            form.save()
+            return render(request, 'main/user/edit.html', {
+                'form': form,
+                'success': True
+            })
+    else:
+        task_instance = Task.objects.get(pk=id)
+        form = TaskForm(instance=task_instance)
+        return render(request, 'main/user/edit.html', {
+            'form': form
+        })
+
+def delete(request, id):
+    if request.method == "POST":
+        task = Task.objects.get(pk=id)
+        task.delete()
+        # Add 'success' parameter to the URL
+        return HttpResponseRedirect(reverse('task_list') + '?success=True')
+
+def completed(request, id):
+    task = Task.objects.get(pk = id)
+    task.completed = True
+    task.save()
+
+    return HttpResponseRedirect(reverse('task_list'))
+
+

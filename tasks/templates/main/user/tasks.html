@@ -1,41 +1,105 @@
 {%extends 'main/base.html'%} {% block title %} Add Task {% endblock %} {% load crispy_forms_tags %} {% block content %}
 
-<div class="mx-5 p-5">
-    {% if tasks %}
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Title</th>
-                <th scope="col">Completed</th>
-                <th scope="col">Actions</th>
-                <!-- New column for actions -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for task in tasks %}
-            <tr class="table-info">
-                <td>{{ task.title }}</td>
-                <td>
-                    {% if task.completed %}
-                    <i class="fas fa-check"></i>
-                    <!-- FontAwesome check icon -->
-                    {% else %}
-                    <!-- Optionally, you can display some text for incomplete tasks -->
-                    Not Completed {% endif %}
-                </td>
-                <td>
-                    <a href="" class="btn btn-sm btn-info"><i class="fa-solid fa-circle-info fa-lg"></i></a>
-                    <a href="" class="btn btn-sm btn-warning">
-                        <i class="fa-solid fa-pen-to-square fa-lg"></i></a>
-                    <a href="" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash fa-lg"></i></a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class="alert alert-primary ms-4 me-4">No Task Records</div>
-    {% endif %}
+<div class="text-sm">
+    <div class="d-flex justify-content-start my-4">
+        <a href="add-task" class="btn btn-info">Add New Task</a>
+    </div>
+
+    {% if request.GET.success %}
+    <div class="text-center"></div>
+    <div class="alert alert-success mx-5 text-center" role="alert">
+        Task Deleted successfully.
+    </div>
+</div>
+{% endif %} {% if tasks %}
+<table class="table table-hover ">
+    <thead>
+        <tr class="table-info">
+            <th scope="col">Title</th>
+            <th scope="col">Description</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+            <!-- New column for actions -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.description }}</td>
+            <td>
+                {% if task.completed %}
+                <i class="fas fa-check"></i>
+                <!-- FontAwesome check icon -->
+                {% else %}
+                <!-- Optionally, you can display some text for incomplete tasks -->
+                Not Completed {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'completed' task.id %}" class="btn btn-sm btn-success mx-1 mt-1"><i class="fas fa-check fa-lg"></i></a>
+                <!-- <a href="" class="btn btn-sm btn-info"><i class="fa-solid fa-circle-info fa-lg"></i></a> -->
+                <button class="btn btn-sm btn-info mx-1 mt-1" href="{% url 'task_details' task.id %}" data-bs-toggle="modal" data-bs-target="#mymodal{{task.id}}"><i class="fa-solid fa-circle-info fa-lg"></i></button>
+                <!-- STUDENT DETAILS MODAL -->
+                <div class="modal" id="mymodal{{task.id}}">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Task: {{ task.title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"></span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="list-unstyled">
+                                    <li>Task Title: <strong>{{ task.description }}</strong></li>
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="{% url 'edit' task.id %}" class="btn btn-sm btn-warning mx-1 mt-1">
+                    <i class="fa-solid fa-pen-to-square fa-lg"></i></a>
+                <button class="btn btn-sm btn-danger mt-1 mx-1" data-bs-toggle="modal" data-bs-target="#delete{{task.id}}"><i class="fa-solid fa-trash fa-lg"></i></button>
+
+
+                <!-- CONFIRM DELETETION MODAL -->
+
+                <div class="modal" id="delete{{task.id}}">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Student: {{ task.firstname}} {{task.lastname}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"></span>
+                          </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete the student?</p>
+
+                            </div>
+                            <div class="modal-footer">
+                                <form action="{% url 'delete' task.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="submit" class="btn btn-danger" value="Delete">
+                                </form>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="alert alert-primary ms-4 me-4">No Task Records</div>
+{% endif %}
 </div>
 
 
